@@ -4,28 +4,50 @@
 
 const interactStar = {
   image: new Image(),
-  floatTime: 0,
+  time: 0,
 
+  // Inicialización
   init() {
     this.image.src = "assets/ui/star.png";
   },
 
+  // Animación (respiración)
   update() {
-    this.floatTime += 0.05;
+    this.time += 0.05;
   },
 
+  // Dibujo sobre objeto interactuable
   draw(ctx, object, scale, offsetX, offsetY) {
     if (!object || !this.image.complete) return;
 
-    const baseY = object.y - 18;
-    const floatOffset = Math.sin(this.floatTime) * 3;
+    // Posición base sobre el objeto
+    const baseX = object.x + object.width / 2;
+    const baseY = object.y - 22 - (object.height * 0.3);
 
-    const x = offsetX + (object.x + object.width / 2 - 8) * scale;
-    const y = offsetY + (baseY + floatOffset) * scale;
+    // ⭐ EFECTO RESPIRAR (crece y encoge)
+    const pulse = 1 + Math.sin(this.time) * 0.15; // tamaño
+    const alpha = 0.7 + Math.sin(this.time) * 0.3; // brillo
+
+    const size = 16 * pulse;
+
+    // Posición escalada
+    const x =
+      offsetX + (baseX - size / 2) * scale;
+    const y =
+      offsetY + (baseY - size / 2) * scale;
 
     ctx.save();
     ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(this.image, x, y, 16 * scale, 16 * scale);
+    ctx.globalAlpha = alpha;
+
+    ctx.drawImage(
+      this.image,
+      x,
+      y,
+      size * scale,
+      size * scale
+    );
+
     ctx.restore();
   }
 };
