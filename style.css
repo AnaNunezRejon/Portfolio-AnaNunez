@@ -527,6 +527,7 @@ body::before {
     #soundToggle {
         right: 16px;
         z-index: 4000;
+         top: 20px;
     }
 
     #fullscreenToggle,
