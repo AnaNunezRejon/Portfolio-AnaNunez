@@ -21,14 +21,14 @@ window.AudioManager = {
     const saved = localStorage.getItem("sound-enabled");
     this.enabled = saved !== null ? saved === "true" : true;
 
-    // Música ambiente
+    //  Música ambiente
     this.music = new Audio("assets/sounds/music/jigglypuffs.mp3");
     this.music.loop = true;
     this.music.volume = 0.07;
 
     if (!this.enabled) this.music.volume = 0;
 
-    // Efectos de sonido
+    //  Efectos de sonido
     this.sounds = {
 
       // Pasos (sonido único)
@@ -36,11 +36,11 @@ window.AudioManager = {
         "assets/sounds/steps/footstep-1-83098.mp3"
       ),
 
-      // UI
+      // 🪟 UI
       openUI: new Audio("assets/sounds/ui/open.mp3"),
       closeUI: new Audio("assets/sounds/ui/close.mp3"),
 
-      // Objetos
+      //  Objetos
       keyboard: new Audio(
         "assets/sounds/objects/keyboard-typing-2-292589.mp3"
       ),
@@ -96,12 +96,13 @@ this.sounds.water.volume = 0.4;
   // ===============================
   // MÚSICA
   // ===============================
-playMusic() {
-  if (!this.enabled || !this.music) return;
+  playMusic() {
+    if (!this.enabled) return;
 
-  this.music.currentTime = 0; // ⬅ reinicia siempre
-  this.music.play().catch(() => {});
-},
+    if (this.music && this.music.paused) {
+      this.music.play().catch(() => {});
+    }
+  },
 
   lowerMusic() {
     if (this.music) this.music.volume = 0.06;

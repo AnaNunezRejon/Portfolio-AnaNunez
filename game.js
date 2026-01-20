@@ -179,21 +179,21 @@ function handleFullscreenChange() {
 // ---------- INICIO DEL JUEGO ----------
 function startGame() {
 
-  AudioManager.init();
-  AudioManager.playMusic();
-  // Ocultar modal
-  document.getElementById('welcomeModal').style.display = 'none';
+    AudioManager.init();
+    AudioManager.playMusic();
+    // Ocultar modal
+    document.getElementById('welcomeModal').style.display = 'none';
 
-  // Mostrar instrucciones
-  document.querySelector('.instructions').style.display = 'block';
+    // Mostrar instrucciones
+    document.querySelector('.instructions').style.display = 'block';
 
-  // Configurar canvas
-  setupCanvas();
+    // Configurar canvas
+    setupCanvas();
 
-  // Iniciar en pantalla completa después de un breve delay
-  setTimeout(() => {
-    enterFullscreen();
-  }, 300);
+    // Iniciar en pantalla completa después de un breve delay
+    setTimeout(() => {
+        enterFullscreen();
+    }, 300);
 }
 
 // ---------- INPUT HANDLING ----------
@@ -441,30 +441,24 @@ const closeOverlayBtn = document.getElementById("closeOverlay");
 
 // ABRIR
 function openOverlay(html) {
-  overlayBody.innerHTML = html;
-  overlay.classList.remove("hidden");
-  overlay.classList.add("show");
-
-  // Si el overlay está visible → música ON
-  AudioManager.playMusic();
+  AudioManager.lowerMusic(); // ✔️ solo baja volumen
+    overlayBody.innerHTML = html;
+    overlay.classList.remove("hidden");
+    overlay.classList.add("show");
 }
-
 
 // CERRAR
 function closeOverlay() {
-  overlay.classList.remove("show");
+    overlay.classList.remove("show");
 
-  //  Si sales de la pantalla → música OFF
-  if (AudioManager.music) {
-    AudioManager.music.pause();
-    AudioManager.music.currentTime = 0;
-  }
-
-  setTimeout(() => {
-    overlay.classList.add("hidden");
-    overlayBody.innerHTML = "";
-  }, 300);
+    AudioManager.restoreMusic(); // ✔️ vuelve volumen
+    setTimeout(() => {
+        overlay.classList.add("hidden");
+        overlayBody.innerHTML = "";
+    }, 300);
 }
+
+
 
 
 // BOTÓN X
@@ -1152,12 +1146,10 @@ Busco prácticas donde aportar mi perspectiva creativa y mi capacidad de aprendi
 
 }
 
-// ===============================
-// PAUSAR MÚSICA AL CAMBIAR DE PESTAÑA
-// ===============================
 document.addEventListener("visibilitychange", () => {
   if (document.hidden && AudioManager.music) {
     AudioManager.music.pause();
     AudioManager.music.currentTime = 0;
   }
 });
+
