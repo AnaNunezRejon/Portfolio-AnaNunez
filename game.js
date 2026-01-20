@@ -24,11 +24,11 @@ playerSprite.src = "assets/player.png";
 
 // ---------- PLAYER ----------
 const player = {
-    x: 187,  // 280 * (640/960) ≈ 187
-    y: 253,  // 380 * (480/720) ≈ 253
-    width: 32,
-    height: 32,
-    speed: 2
+  x: 187,  // 280 * (640/960) ≈ 187
+  y: 253,  // 380 * (480/720) ≈ 253
+  width: 32,
+  height: 32,
+  speed: 2
 };
 
 // ---------- ANIMATION ----------
@@ -54,105 +54,105 @@ let MAP_HEIGHT = GAME_HEIGHT; // 480
 
 // Función para escalar el canvas
 function setupCanvas() {
-    // Obtener el tamaño del contenedor
-    const displayWidth = canvas.clientWidth;
-    const displayHeight = canvas.clientHeight;
+  // Obtener el tamaño del contenedor
+  const displayWidth = canvas.clientWidth;
+  const displayHeight = canvas.clientHeight;
 
-    // Cambiar el tamaño interno del canvas
-    canvas.width = displayWidth;
-    canvas.height = displayHeight;
+  // Cambiar el tamaño interno del canvas
+  canvas.width = displayWidth;
+  canvas.height = displayHeight;
 
-    // Calcular escala para mantener proporción 4:3
-    const scaleX = displayWidth / GAME_WIDTH;
-    const scaleY = displayHeight / GAME_HEIGHT;
-    scale = Math.min(scaleX, scaleY); // Escala uniforme
+  // Calcular escala para mantener proporción 4:3
+  const scaleX = displayWidth / GAME_WIDTH;
+  const scaleY = displayHeight / GAME_HEIGHT;
+  scale = Math.min(scaleX, scaleY); // Escala uniforme
 
-    // Calcular offset para centrar
-    offsetX = (displayWidth - GAME_WIDTH * scale) / 2;
-    offsetY = (displayHeight - GAME_HEIGHT * scale) / 2;
+  // Calcular offset para centrar
+  offsetX = (displayWidth - GAME_WIDTH * scale) / 2;
+  offsetY = (displayHeight - GAME_HEIGHT * scale) / 2;
 
-    // Mantener el pixel art nítido
-    ctx.imageSmoothingEnabled = false;
-    ctx.mozImageSmoothingEnabled = false;
-    ctx.webkitImageSmoothingEnabled = false;
-    ctx.msImageSmoothingEnabled = false;
+  // Mantener el pixel art nítido
+  ctx.imageSmoothingEnabled = false;
+  ctx.mozImageSmoothingEnabled = false;
+  ctx.webkitImageSmoothingEnabled = false;
+  ctx.msImageSmoothingEnabled = false;
 }
 
 // Función para dibujar con escalado
 function drawScaled(image, sx, sy, sw, sh, dx, dy, dw, dh) {
-    ctx.drawImage(
-        image,
-        sx, sy, sw, sh,
-        offsetX + dx * scale,
-        offsetY + dy * scale,
-        dw * scale,
-        dh * scale
-    );
+  ctx.drawImage(
+    image,
+    sx, sy, sw, sh,
+    offsetX + dx * scale,
+    offsetY + dy * scale,
+    dw * scale,
+    dh * scale
+  );
 }
 
 function fillRectScaled(x, y, width, height, color) {
-    ctx.fillStyle = color;
-    ctx.fillRect(
-        offsetX + x * scale,
-        offsetY + y * scale,
-        width * scale,
-        height * scale
-    );
+  ctx.fillStyle = color;
+  ctx.fillRect(
+    offsetX + x * scale,
+    offsetY + y * scale,
+    width * scale,
+    height * scale
+  );
 }
 
 function fillTextScaled(text, x, y, fontSize = 14) {
-    const scaledFontSize = Math.max(8, fontSize * scale);
-    ctx.font = `${scaledFontSize}px monospace`;
-    ctx.fillText(
-        text,
-        offsetX + x * scale,
-        offsetY + y * scale
-    );
+  const scaledFontSize = Math.max(8, fontSize * scale);
+  ctx.font = `${scaledFontSize}px monospace`;
+  ctx.fillText(
+    text,
+    offsetX + x * scale,
+    offsetY + y * scale
+  );
 }
 
 // ---------- FUNCIONES DE PANTALLA COMPLETA ----------
 function enterFullscreen() {
-    if (!isFullscreen) {
-        const elem = document.documentElement;
+  if (!isFullscreen) {
+    const elem = document.documentElement;
 
-        if (elem.requestFullscreen) {
-            elem.requestFullscreen();
-        } else if (elem.webkitRequestFullscreen) {
-            elem.webkitRequestFullscreen();
-        } else if (elem.msRequestFullscreen) {
-            elem.msRequestFullscreen();
-        }
-
-        isFullscreen = true;
-        document.body.classList.add('fullscreen');
-        document.getElementById('fullscreenIndicator').style.display = 'block';
-
-        setTimeout(setupCanvas, 100);
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) {
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) {
+      elem.msRequestFullscreen();
     }
+
+    isFullscreen = true;
+    document.body.classList.add('fullscreen');
+    document.getElementById('fullscreenIndicator').style.display = 'block';
+
+    setTimeout(setupCanvas, 100);
+  }
 }
 
 function exitFullscreen() {
-    if (document.exitFullscreen) {
-        document.exitFullscreen();
-    } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-    } else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
-    }
+  if (document.exitFullscreen) {
+    document.exitFullscreen();
+  } else if (document.webkitExitFullscreen) {
+    document.webkitExitFullscreen();
+  } else if (document.msExitFullscreen) {
+    document.msExitFullscreen();
+  }
 
-    isFullscreen = false;
-    document.body.classList.remove('fullscreen');
-    document.getElementById('fullscreenIndicator').style.display = 'none';
+  isFullscreen = false;
+  document.body.classList.remove('fullscreen');
+  document.getElementById('fullscreenIndicator').style.display = 'none';
 
-    setTimeout(setupCanvas, 100);
+  setTimeout(setupCanvas, 100);
 }
 
 function toggleFullscreen() {
-    if (!isFullscreen) {
-        enterFullscreen();
-    } else {
-        exitFullscreen();
-    }
+  if (!isFullscreen) {
+    enterFullscreen();
+  } else {
+    exitFullscreen();
+  }
 }
 
 // Detectar cambios de pantalla completa
@@ -161,193 +161,193 @@ document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
 document.addEventListener('msfullscreenchange', handleFullscreenChange);
 
 function handleFullscreenChange() {
-    const isCurrentlyFullscreen = !!(
-        document.fullscreenElement ||
-        document.webkitFullscreenElement ||
-        document.msFullscreenElement
-    );
+  const isCurrentlyFullscreen = !!(
+    document.fullscreenElement ||
+    document.webkitFullscreenElement ||
+    document.msFullscreenElement
+  );
 
-    if (isCurrentlyFullscreen !== isFullscreen) {
-        isFullscreen = isCurrentlyFullscreen;
-        document.body.classList.toggle('fullscreen', isFullscreen);
-        document.getElementById('fullscreenIndicator').style.display = isFullscreen ? 'block' : 'none';
+  if (isCurrentlyFullscreen !== isFullscreen) {
+    isFullscreen = isCurrentlyFullscreen;
+    document.body.classList.toggle('fullscreen', isFullscreen);
+    document.getElementById('fullscreenIndicator').style.display = isFullscreen ? 'block' : 'none';
 
-        setTimeout(setupCanvas, 100);
-    }
+    setTimeout(setupCanvas, 100);
+  }
 }
 
 // ---------- INICIO DEL JUEGO ----------
 function startGame() {
 
-    AudioManager.init();
-    AudioManager.playMusic();
-    // Ocultar modal
-    document.getElementById('welcomeModal').style.display = 'none';
+  AudioManager.init();
+  AudioManager.playMusic();
+  // Ocultar modal
+  document.getElementById('welcomeModal').style.display = 'none';
 
-    // Mostrar instrucciones
-    document.querySelector('.instructions').style.display = 'block';
+  // Mostrar instrucciones
+  document.querySelector('.instructions').style.display = 'block';
 
-    // Configurar canvas
-    setupCanvas();
+  // Configurar canvas
+  setupCanvas();
 
-    // Iniciar en pantalla completa después de un breve delay
-    setTimeout(() => {
-        enterFullscreen();
-    }, 300);
+  // Iniciar en pantalla completa después de un breve delay
+  setTimeout(() => {
+    enterFullscreen();
+  }, 300);
 }
 
 // ---------- INPUT HANDLING ----------
 window.addEventListener("keydown", e => {
-    keys[e.key] = true;
+  keys[e.key] = true;
 
-    // Tecla F para pantalla completa
-    if (e.key === "f" || e.key === "F") {
-        e.preventDefault();
-        toggleFullscreen();
-    }
+  // Tecla F para pantalla completa
+  if (e.key === "f" || e.key === "F") {
+    e.preventDefault();
+    toggleFullscreen();
+  }
 
-    if ((e.key === "e" || e.key === "E") && canInteract && nearbyObject) {
-        const action = nearbyObject.properties?.find(p => p.name === "action")?.value;
-        if (action) handleAction(action);
-        canInteract = false;
-    }
+  if ((e.key === "e" || e.key === "E") && canInteract && nearbyObject) {
+    const action = nearbyObject.properties?.find(p => p.name === "action")?.value;
+    if (action) handleAction(action);
+    canInteract = false;
+  }
 });
 
 window.addEventListener("keyup", e => {
-    keys[e.key] = false;
-    if (e.key === "e" || e.key === "E") canInteract = true;
+  keys[e.key] = false;
+  if (e.key === "e" || e.key === "E") canInteract = true;
 });
 
 // Inicializar
 window.addEventListener('load', function () {
-    setupCanvas();
+  setupCanvas();
 });
 
 // ---------- LOAD MAP ----------
 fetch("map/room.tmj")
-    .then(res => res.json())
-    .then(data => {
-        collisionObjects = data.layers.find(l => l.name === "collisions")?.objects || [];
-        interactables = data.layers.find(l => l.name === "interactables")?.objects || [];
+  .then(res => res.json())
+  .then(data => {
+    collisionObjects = data.layers.find(l => l.name === "collisions")?.objects || [];
+    interactables = data.layers.find(l => l.name === "interactables")?.objects || [];
 
-        // Tamaño del TMJ
-        const TMJ_WIDTH = data.width * data.tilewidth;
-        const TMJ_HEIGHT = data.height * data.tileheight;
+    // Tamaño del TMJ
+    const TMJ_WIDTH = data.width * data.tilewidth;
+    const TMJ_HEIGHT = data.height * data.tileheight;
 
-        // Usamos el tamaño de la imagen (640x480)
-        MAP_WIDTH = GAME_WIDTH;
-        MAP_HEIGHT = GAME_HEIGHT;
+    // Usamos el tamaño de la imagen (640x480)
+    MAP_WIDTH = GAME_WIDTH;
+    MAP_HEIGHT = GAME_HEIGHT;
 
-        console.log(`TMJ: ${TMJ_WIDTH}x${TMJ_HEIGHT}, Juego: ${MAP_WIDTH}x${MAP_HEIGHT}`);
+    console.log(`TMJ: ${TMJ_WIDTH}x${TMJ_HEIGHT}, Juego: ${MAP_WIDTH}x${MAP_HEIGHT}`);
 
-        // Si el TMJ no es 640x480, escalamos las colisiones
-        if (TMJ_WIDTH !== MAP_WIDTH || TMJ_HEIGHT !== MAP_HEIGHT) {
-            const scaleX = MAP_WIDTH / TMJ_WIDTH;
-            const scaleY = MAP_HEIGHT / TMJ_HEIGHT;
+    // Si el TMJ no es 640x480, escalamos las colisiones
+    if (TMJ_WIDTH !== MAP_WIDTH || TMJ_HEIGHT !== MAP_HEIGHT) {
+      const scaleX = MAP_WIDTH / TMJ_WIDTH;
+      const scaleY = MAP_HEIGHT / TMJ_HEIGHT;
 
-            console.log(`Escalando colisiones: X=${scaleX.toFixed(2)}, Y=${scaleY.toFixed(2)}`);
+      console.log(`Escalando colisiones: X=${scaleX.toFixed(2)}, Y=${scaleY.toFixed(2)}`);
 
-            collisionObjects = collisionObjects.map(obj => ({
-                x: Math.round(obj.x * scaleX),
-                y: Math.round(obj.y * scaleY),
-                width: Math.round(obj.width * scaleX),
-                height: Math.round(obj.height * scaleY),
-                properties: obj.properties || []
-            }));
+      collisionObjects = collisionObjects.map(obj => ({
+        x: Math.round(obj.x * scaleX),
+        y: Math.round(obj.y * scaleY),
+        width: Math.round(obj.width * scaleX),
+        height: Math.round(obj.height * scaleY),
+        properties: obj.properties || []
+      }));
 
-            interactables = interactables.map(obj => ({
-                x: Math.round(obj.x * scaleX),
-                y: Math.round(obj.y * scaleY),
-                width: Math.round(obj.width * scaleX),
-                height: Math.round(obj.height * scaleY),
-                properties: obj.properties || []
-            }));
-        }
+      interactables = interactables.map(obj => ({
+        x: Math.round(obj.x * scaleX),
+        y: Math.round(obj.y * scaleY),
+        width: Math.round(obj.width * scaleX),
+        height: Math.round(obj.height * scaleY),
+        properties: obj.properties || []
+      }));
+    }
 
-        mapLoaded = true;
-        console.log(`Mapa cargado. Colisiones: ${collisionObjects.length}, Interactuables: ${interactables.length}`);
-    });
+    mapLoaded = true;
+    console.log(`Mapa cargado. Colisiones: ${collisionObjects.length}, Interactuables: ${interactables.length}`);
+  });
 
 // ---------- COLLISIONS ----------
 function rectsOverlap(ax, ay, aw, ah, bx, by, bw, bh) {
-    return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
+  return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
 }
 
 function collidesAt(x, y) {
-    return collisionObjects.some(o =>
-        rectsOverlap(x, y, player.width, player.height, o.x, o.y, o.width, o.height)
-    );
+  return collisionObjects.some(o =>
+    rectsOverlap(x, y, player.width, player.height, o.x, o.y, o.width, o.height)
+  );
 }
 
 function getNearbyInteractable() {
-    return interactables.find(o =>
-        rectsOverlap(player.x, player.y, player.width, player.height, o.x, o.y, o.width, o.height)
-    );
+  return interactables.find(o =>
+    rectsOverlap(player.x, player.y, player.width, player.height, o.x, o.y, o.width, o.height)
+  );
 }
 
 // ---------- UPDATE ----------
 function update() {
-    if (!mapLoaded) return;
+  if (!mapLoaded) return;
 
-    let dx = 0;
-    let dy = 0;
-    let moving = false;
+  let dx = 0;
+  let dy = 0;
+  let moving = false;
 
-    if (keys["ArrowUp"] || keys["w"]) {
-        dy -= player.speed;
-        direction = "up";
-        moving = true;
-    }
-    if (keys["ArrowDown"] || keys["s"]) {
-        dy += player.speed;
-        direction = "down";
-        moving = true;
-    }
-    if (keys["ArrowLeft"] || keys["a"]) {
-        dx -= player.speed;
-        direction = "left";
-        moving = true;
-    }
-    if (keys["ArrowRight"] || keys["d"]) {
-        dx += player.speed;
-        direction = "right";
-        moving = true;
-    }
+  if (keys["ArrowUp"] || keys["w"]) {
+    dy -= player.speed;
+    direction = "up";
+    moving = true;
+  }
+  if (keys["ArrowDown"] || keys["s"]) {
+    dy += player.speed;
+    direction = "down";
+    moving = true;
+  }
+  if (keys["ArrowLeft"] || keys["a"]) {
+    dx -= player.speed;
+    direction = "left";
+    moving = true;
+  }
+  if (keys["ArrowRight"] || keys["d"]) {
+    dx += player.speed;
+    direction = "right";
+    moving = true;
+  }
 
-    // Limitar al tamaño del mapa
-    let nextX = Math.max(0, Math.min(player.x + dx, MAP_WIDTH - player.width));
-    let nextY = Math.max(0, Math.min(player.y + dy, MAP_HEIGHT - player.height));
+  // Limitar al tamaño del mapa
+  let nextX = Math.max(0, Math.min(player.x + dx, MAP_WIDTH - player.width));
+  let nextY = Math.max(0, Math.min(player.y + dy, MAP_HEIGHT - player.height));
 
-    // Verificar colisiones
-    if (dx !== 0 && !collidesAt(nextX, player.y)) player.x = nextX;
-    if (dy !== 0 && !collidesAt(player.x, nextY)) player.y = nextY;
+  // Verificar colisiones
+  if (dx !== 0 && !collidesAt(nextX, player.y)) player.x = nextX;
+  if (dy !== 0 && !collidesAt(player.x, nextY)) player.y = nextY;
 
-   // Animación + sonido de pasos
-if (moving) {
+  // Animación + sonido de pasos
+  if (moving) {
 
     // 🔊 PASOS SOLO SI HAY TECLA PULSADA
     if (
-        keys["ArrowUp"] || keys["w"] ||
-        keys["ArrowDown"] || keys["s"] ||
-        keys["ArrowLeft"] || keys["a"] ||
-        keys["ArrowRight"] || keys["d"]
+      keys["ArrowUp"] || keys["w"] ||
+      keys["ArrowDown"] || keys["s"] ||
+      keys["ArrowLeft"] || keys["a"] ||
+      keys["ArrowRight"] || keys["d"]
     ) {
-        AudioManager.playStep();
+      AudioManager.playStep();
     }
 
     frameTimer++;
     if (frameTimer >= frameSpeed) {
-        frame = (frame + 1) % framesPerRow;
-        frameTimer = 0;
+      frame = (frame + 1) % framesPerRow;
+      frameTimer = 0;
     }
 
-} else {
+  } else {
     frame = 0;
-}
+  }
 
 
-    // Verificar objetos interactuables cercanos
-    nearbyObject = getNearbyInteractable();
+  // Verificar objetos interactuables cercanos
+  nearbyObject = getNearbyInteractable();
 }
 
 // ---------- SONIDO ----------
@@ -362,73 +362,73 @@ soundToggle.addEventListener("click", () => {
 
 // ---------- DRAW FUNCTIONS ----------
 function drawRoom() {
-    // Dibujar fondo negro primero
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  // Dibujar fondo negro primero
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Dibujar la sala escalada
-    drawScaled(room, 0, 0, room.width, room.height, 0, 0, GAME_WIDTH, GAME_HEIGHT);
+  // Dibujar la sala escalada
+  drawScaled(room, 0, 0, room.width, room.height, 0, 0, GAME_WIDTH, GAME_HEIGHT);
 }
 
 function drawPlayer() {
-    const SPRITE_SIZE = 96;
-    const rowMap = { down: 0, up: 1, left: 2, right: 3 };
-    const row = rowMap[direction];
+  const SPRITE_SIZE = 96;
+  const rowMap = { down: 0, up: 1, left: 2, right: 3 };
+  const row = rowMap[direction];
 
-    const offsetSpriteX = (SPRITE_SIZE - player.width) / 2;
-    const offsetSpriteY = SPRITE_SIZE - player.height;
+  const offsetSpriteX = (SPRITE_SIZE - player.width) / 2;
+  const offsetSpriteY = SPRITE_SIZE - player.height;
 
-    drawScaled(
-        playerSprite,
-        frame * SPRITE_SIZE,
-        row * SPRITE_SIZE,
-        SPRITE_SIZE,
-        SPRITE_SIZE,
-        player.x - offsetSpriteX,
-        player.y - offsetSpriteY,
-        SPRITE_SIZE,
-        SPRITE_SIZE
-    );
+  drawScaled(
+    playerSprite,
+    frame * SPRITE_SIZE,
+    row * SPRITE_SIZE,
+    SPRITE_SIZE,
+    SPRITE_SIZE,
+    player.x - offsetSpriteX,
+    player.y - offsetSpriteY,
+    SPRITE_SIZE,
+    SPRITE_SIZE
+  );
 }
 
 function drawInteractHint() {
-    if (!nearbyObject) return;
+  if (!nearbyObject) return;
 
-    fillRectScaled(
-        nearbyObject.x + nearbyObject.width / 2 - 12,
-        nearbyObject.y - 26,
-        24,
-        24,
-        "rgba(0,0,0,0.7)"
-    );
+  fillRectScaled(
+    nearbyObject.x + nearbyObject.width / 2 - 12,
+    nearbyObject.y - 26,
+    24,
+    24,
+    "rgba(0,0,0,0.7)"
+  );
 
-    ctx.fillStyle = "#fff";
-    ctx.textAlign = "center";
-    fillTextScaled("E", nearbyObject.x + nearbyObject.width / 2, nearbyObject.y - 9, 14);
-    ctx.textAlign = "left";
+  ctx.fillStyle = "#fff";
+  ctx.textAlign = "center";
+  fillTextScaled("E", nearbyObject.x + nearbyObject.width / 2, nearbyObject.y - 9, 14);
+  ctx.textAlign = "left";
 }
 
 // ---------- GAME LOOP ----------
 function gameLoop() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawRoom();
-    update();
-    drawPlayer();
-    drawInteractHint();
-    requestAnimationFrame(gameLoop);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawRoom();
+  update();
+  drawPlayer();
+  drawInteractHint();
+  requestAnimationFrame(gameLoop);
 }
 
 // ---------- START ----------
 room.onload = () => {
-    console.log(`Imagen sala cargada: ${room.width}x${room.height}`);
+  console.log(`Imagen sala cargada: ${room.width}x${room.height}`);
 
-    // Verificar que coincida con nuestro tamaño esperado
-    if (room.width !== GAME_WIDTH || room.height !== GAME_HEIGHT) {
-        console.warn(`ADVERTENCIA: Tamaño de imagen (${room.width}x${room.height}) no coincide con juego (${GAME_WIDTH}x${GAME_HEIGHT})`);
-    }
+  // Verificar que coincida con nuestro tamaño esperado
+  if (room.width !== GAME_WIDTH || room.height !== GAME_HEIGHT) {
+    console.warn(`ADVERTENCIA: Tamaño de imagen (${room.width}x${room.height}) no coincide con juego (${GAME_WIDTH}x${GAME_HEIGHT})`);
+  }
 
-    // Iniciar el bucle del juego
-    gameLoop();
+  // Iniciar el bucle del juego
+  gameLoop();
 };
 
 // Event listener para redimensionar
@@ -441,31 +441,43 @@ const closeOverlayBtn = document.getElementById("closeOverlay");
 
 // ABRIR
 function openOverlay(html) {
-    overlayBody.innerHTML = html;
-    overlay.classList.remove("hidden");
-    overlay.classList.add("show");
+  overlayBody.innerHTML = html;
+  overlay.classList.remove("hidden");
+  overlay.classList.add("show");
+
+  // Si el overlay está visible → música ON
+  AudioManager.playMusic();
 }
+
 
 // CERRAR
 function closeOverlay() {
-    overlay.classList.remove("show");
-    setTimeout(() => {
-        overlay.classList.add("hidden");
-        overlayBody.innerHTML = "";
-    }, 300);
+  overlay.classList.remove("show");
+
+  //  Si sales de la pantalla → música OFF
+  if (AudioManager.music) {
+    AudioManager.music.pause();
+    AudioManager.music.currentTime = 0;
+  }
+
+  setTimeout(() => {
+    overlay.classList.add("hidden");
+    overlayBody.innerHTML = "";
+  }, 300);
 }
+
 
 // BOTÓN X
 closeOverlayBtn.addEventListener("click", closeOverlay);
 
 // ESC
 window.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeOverlay();
+  if (e.key === "Escape") closeOverlay();
 });
 
 // CLIC FUERA
 overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) closeOverlay();
+  if (e.target === overlay) closeOverlay();
 });
 
 // ------------------------------------------------------------------------------
@@ -475,27 +487,27 @@ const imageViewerImg = document.getElementById("imageViewerImg");
 const closeImageBtn = document.querySelector(".close-image");
 
 function openImage(src) {
-    imageViewerImg.src = src;
-    imageViewer.classList.add("show");
-    imageViewer.classList.remove("hidden");
+  imageViewerImg.src = src;
+  imageViewer.classList.add("show");
+  imageViewer.classList.remove("hidden");
 }
 
 function closeImage() {
-    imageViewer.classList.remove("show");
-    setTimeout(() => {
-        imageViewer.classList.add("hidden");
-        imageViewerImg.src = "";
-    }, 300);
+  imageViewer.classList.remove("show");
+  setTimeout(() => {
+    imageViewer.classList.add("hidden");
+    imageViewerImg.src = "";
+  }, 300);
 }
 
 closeImageBtn.addEventListener("click", closeImage);
 
 window.addEventListener("keydown", e => {
-    if (e.key === "Escape") closeImage();
+  if (e.key === "Escape") closeImage();
 });
 
 imageViewer.addEventListener("click", e => {
-    if (e.target === imageViewer) closeImage();
+  if (e.target === imageViewer) closeImage();
 });
 
 // ===============================
@@ -503,14 +515,14 @@ imageViewer.addEventListener("click", e => {
 // ===============================
 
 function handleAction(action) {
-    switch (action) {
+  switch (action) {
 
-        // ===============================
-        // 💻 PROYECTOS (GITHUB)
-        // ===============================
-        case "projects-pc":
-             AudioManager.play("keyboard");
-            openOverlay(`
+    // ===============================
+    // 💻 PROYECTOS (GITHUB)
+    // ===============================
+    case "projects-pc":
+      AudioManager.play("keyboard");
+      openOverlay(`
         <h2>💻 PROYECTOS</h2>
 
         <div class="grid grid-2">
@@ -608,11 +620,11 @@ function handleAction(action) {
 
         </div>
       `);
-            break;
+      break;
 
-        case "projects-design":
-             AudioManager.play("tv");
-            openOverlay(`
+    case "projects-design":
+      AudioManager.play("tv");
+      openOverlay(`
     <h2 style="font-size: 16px; margin-bottom: 25px; text-align: center;">PROYECTOS DE DISEÑO</h2>
     
     <div style="text-align: center; margin-bottom: 30px;">
@@ -683,13 +695,13 @@ function handleAction(action) {
       </p>
     </div>
   `);
-            break;
+      break;
 
-        // ===============================
-        // FIGMA / DISEÑO
-        // ===============================
-        case "figma":
-            openOverlay(`
+    // ===============================
+    // FIGMA / DISEÑO
+    // ===============================
+    case "figma":
+      openOverlay(`
         <h2> DISEÑO UI/UX</h2>
 
         <div class="grid grid-3">
@@ -762,14 +774,14 @@ function handleAction(action) {
           </a>
         </div>
       `);
-            break;
+      break;
 
-        // ===============================
-        // SOBRE MÍ / SOFT SKILLS
-        // ===============================
-        case "softskills":
-            AudioManager.play("sit");
-            openOverlay(`
+    // ===============================
+    // SOBRE MÍ / SOFT SKILLS
+    // ===============================
+    case "softskills":
+      AudioManager.play("sit");
+      openOverlay(`
         <h2>SOBRE MÍ</h2>
 
         <div class="card" style="margin-bottom: 24px;">
@@ -829,14 +841,14 @@ Busco prácticas donde aportar mi perspectiva creativa y mi capacidad de aprendi
 
         </div>
       `);
-            break;
+      break;
 
-        // ===============================
-        // FORMACIÓN
-        // ===============================
-        case "education":
-            AudioManager.play("book");
-            openOverlay(`
+    // ===============================
+    // FORMACIÓN
+    // ===============================
+    case "education":
+      AudioManager.play("book");
+      openOverlay(`
         <h2> FORMACIÓN</h2>
 
         <div class="grid grid-2">
@@ -901,14 +913,14 @@ Busco prácticas donde aportar mi perspectiva creativa y mi capacidad de aprendi
 </div>
         </div>
       `);
-            break;
+      break;
 
-        // ===============================
-        //  HERRAMIENTAS
-        // ===============================
-        case "tools-develop":
-            AudioManager.play("microwave");
-            openOverlay(`
+    // ===============================
+    //  HERRAMIENTAS
+    // ===============================
+    case "tools-develop":
+      AudioManager.play("microwave");
+      openOverlay(`
     <h2 style="font-size: 16px; margin-bottom: 25px;">🖥️ HERRAMIENTAS DE DESARROLLO</h2>
     
     <div class="grid grid-2" style="gap: 20px;">
@@ -953,11 +965,11 @@ Busco prácticas donde aportar mi perspectiva creativa y mi capacidad de aprendi
       <a href="https://github.com/tu-usuario" target="_blank" class="pixel-btn" style="font-size: 11px; padding: 12px 24px;">VER GITHUB</a>
     </div>
   `);
-            break;
+      break;
 
-        case "tools-design":
-            AudioManager.play("fridgeOpen");
-            openOverlay(`
+    case "tools-design":
+      AudioManager.play("fridgeOpen");
+      openOverlay(`
     <h2> HERRAMIENTAS DE DISEÑO</h2>
     
     <div class="grid grid-2">
@@ -988,11 +1000,11 @@ Busco prácticas donde aportar mi perspectiva creativa y mi capacidad de aprendi
       <a href="portfolio.html" class="pixel-btn" style="font-size: 11px; padding: 12px 24px;">VER PORTFOLIO</a>
     </div>
   `);
-            break;
+      break;
 
-        case "tools":
-             AudioManager.play("water");
-            openOverlay(`
+    case "tools":
+      AudioManager.play("water");
+      openOverlay(`
         <h2> TECNOLOGÍAS</h2>
 
         <div class="grid grid-3">
@@ -1042,14 +1054,14 @@ Busco prácticas donde aportar mi perspectiva creativa y mi capacidad de aprendi
           </div>
         </div>
       `);
-            break;
+      break;
 
-        // ===============================
-        // CONTACTO
-        // ===============================
-        case "contact":
-            AudioManager.play("keys");
-            openOverlay(`
+    // ===============================
+    // CONTACTO
+    // ===============================
+    case "contact":
+      AudioManager.play("keys");
+      openOverlay(`
     <div style="color: #c0a0e0;">  <!-- Morado más oscuro -->
       <h2 style="color: #ffe3ff;">📞 CONTACTO</h2>
 
@@ -1113,25 +1125,37 @@ Busco prácticas donde aportar mi perspectiva creativa y mi capacidad de aprendi
       </div>
     </div>
   `);
-            break;
-    }
+      break;
+  }
 
-    // ===============================
-    // ESCALADO RESPONSIVE DEL CANVAS
-    // ===============================
+  // ===============================
+  // ESCALADO RESPONSIVE DEL CANVAS
+  // ===============================
 
-    // Llama a esta función cuando cambie el tamaño de la ventana
-    window.addEventListener('resize', handleCanvasScaling);
+  // Llama a esta función cuando cambie el tamaño de la ventana
+  window.addEventListener('resize', handleCanvasScaling);
 
-    function handleCanvasScaling() {
-        // No necesitamos cambiar nada aquí porque CSS maneja el tamaño
-        // Solo nos aseguramos que el contexto mantenga el anti-aliasing desactivado
-        ctx.imageSmoothingEnabled = false;
-        ctx.mozImageSmoothingEnabled = false;
-        ctx.webkitImageSmoothingEnabled = false;
-        ctx.msImageSmoothingEnabled = false;
-    }
+  function handleCanvasScaling() {
+    // No necesitamos cambiar nada aquí porque CSS maneja el tamaño
+    // Solo nos aseguramos que el contexto mantenga el anti-aliasing desactivado
+    ctx.imageSmoothingEnabled = false;
+    ctx.mozImageSmoothingEnabled = false;
+    ctx.webkitImageSmoothingEnabled = false;
+    ctx.msImageSmoothingEnabled = false;
+  }
 
-    // Llámala también al inicio
-    handleCanvasScaling();
+  // Llámala también al inicio
+  handleCanvasScaling();
+
+
 }
+
+// ===============================
+// PAUSAR MÚSICA AL CAMBIAR DE PESTAÑA
+// ===============================
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden && AudioManager.music) {
+    AudioManager.music.pause();
+    AudioManager.music.currentTime = 0;
+  }
+});

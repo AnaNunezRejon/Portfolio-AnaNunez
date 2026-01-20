@@ -96,13 +96,12 @@ this.sounds.water.volume = 0.4;
   // ===============================
   // MÚSICA
   // ===============================
-  playMusic() {
-    if (!this.enabled) return;
+playMusic() {
+  if (!this.enabled || !this.music) return;
 
-    if (this.music && this.music.paused) {
-      this.music.play().catch(() => {});
-    }
-  },
+  this.music.currentTime = 0; // ⬅ reinicia siempre
+  this.music.play().catch(() => {});
+},
 
   lowerMusic() {
     if (this.music) this.music.volume = 0.06;
