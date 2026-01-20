@@ -422,9 +422,12 @@ function gameLoop() {
   drawPlayer();
   drawInteractHint();
 
-// ESTRELLA INTERACTIVA
-  interactStar.update();
-  interactStar.draw(ctx, scale, offsetX, offsetY);
+// ESTRELLAS EN TODOS LOS INTERACTUABLES
+interactStar.update();
+
+interactables.forEach(obj => {
+  interactStar.draw(ctx, obj, scale, offsetX, offsetY);
+});
 
 
   requestAnimationFrame(gameLoop);
