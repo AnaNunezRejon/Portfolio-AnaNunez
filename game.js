@@ -183,6 +183,10 @@ function startGame() {
 
     AudioManager.init();
     AudioManager.playMusic();
+
+    interactStar.init();
+
+
     // Ocultar modal
     document.getElementById('welcomeModal').style.display = 'none';
 
@@ -419,10 +423,15 @@ function gameLoop() {
   drawInteractHint();
 
    // ⭐ ESTRELLA INTERACTIVA
-  interactStar.update();
-  interactStar.draw(ctx, nearbyObject, scale, offsetX, offsetY);
+  interactStar.draw(
+    ctx,
+    { x: player.x, y: player.y - 10, width: 32, height: 32 },
+    scale,
+    offsetX,
+    offsetY
+  );
 
-  
+
   requestAnimationFrame(gameLoop);
 }
 
