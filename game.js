@@ -19,6 +19,8 @@ const GAME_HEIGHT = 480;
 const room = new Image();
 room.src = "assets/room.png";
 
+interactStar.init();
+
 const playerSprite = new Image();
 playerSprite.src = "assets/player.png";
 
@@ -415,6 +417,12 @@ function gameLoop() {
   update();
   drawPlayer();
   drawInteractHint();
+
+   // ⭐ ESTRELLA INTERACTIVA
+  interactStar.update();
+  interactStar.draw(ctx, nearbyObject, scale, offsetX, offsetY);
+
+  
   requestAnimationFrame(gameLoop);
 }
 
