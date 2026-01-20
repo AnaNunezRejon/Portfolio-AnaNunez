@@ -35,8 +35,8 @@
 /* ---------- DPAD ---------- */
 
 .dpad {
-  position: absolute;
-  bottom: 100px;        /* ⬅ subimos para no pisar instrucciones */
+  position: fixed;
+  bottom: 24px;   /* ⬅ siempre abajo */
   left: 20px;
   display: flex;
   flex-direction: column;
@@ -52,8 +52,8 @@
 /* ---------- ACCIONES ---------- */
 
 .actions {
-  position: absolute;
-  bottom: 120px;        /* ⬅ simétrico al dpad */
+  position: fixed;
+  bottom: 24px;   /* ⬅ misma altura que el dpad */
   right: 24px;
 }
 
@@ -66,13 +66,13 @@
 /* ---------- HORIZONTAL (landscape) ---------- */
 @media (orientation: landscape) {
   .dpad {
-    bottom: 40px;
-    left: 20px;
+    bottom: 16px;
+    left: 16px;
   }
 
   .actions {
-    bottom: 40px;
-    right: 30px;
+    bottom: 16px;
+    right: 20px;
   }
 }
 

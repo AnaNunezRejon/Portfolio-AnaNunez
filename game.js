@@ -12,8 +12,8 @@ let offsetX = 0;
 let offsetY = 0;
 
 // Tamaño REAL de la imagen room.png (640x480)
-const GAME_WIDTH = 640;   // ← CORREGIDO
-const GAME_HEIGHT = 480;  // ← CORREGIDO
+const GAME_WIDTH = 640;
+const GAME_HEIGHT = 480;
 
 // ---------- ASSETS ----------
 const room = new Image();
@@ -499,14 +499,14 @@ imageViewer.addEventListener("click", e => {
 });
 
 // ===============================
-// HANDLE ACTION (MANTENIENDO TU CÓDIGO)
+// HANDLE ACTION 
 // ===============================
 
 function handleAction(action) {
     switch (action) {
 
         // ===============================
-        // 💻 PROYECTOS (GITHUB) - PIXELART
+        // 💻 PROYECTOS (GITHUB)
         // ===============================
         case "projects-pc":
              AudioManager.play("keyboard");
@@ -686,7 +686,7 @@ function handleAction(action) {
             break;
 
         // ===============================
-        // FIGMA / DISEÑO - PIXELART
+        // FIGMA / DISEÑO
         // ===============================
         case "figma":
             openOverlay(`
@@ -765,7 +765,7 @@ function handleAction(action) {
             break;
 
         // ===============================
-        // SOBRE MÍ / SOFT SKILLS - PIXELART
+        // SOBRE MÍ / SOFT SKILLS
         // ===============================
         case "softskills":
             AudioManager.play("sit");
@@ -832,7 +832,7 @@ Busco prácticas donde aportar mi perspectiva creativa y mi capacidad de aprendi
             break;
 
         // ===============================
-        // FORMACIÓN - PIXELART
+        // FORMACIÓN
         // ===============================
         case "education":
             AudioManager.play("book");
@@ -1045,9 +1045,8 @@ Busco prácticas donde aportar mi perspectiva creativa y mi capacidad de aprendi
             break;
 
         // ===============================
-        // CONTACTO - PIXELART
+        // CONTACTO
         // ===============================
-        // Texto morado más oscuro para mejor legibilidad
         case "contact":
             AudioManager.play("keys");
             openOverlay(`

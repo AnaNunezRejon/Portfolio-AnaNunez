@@ -21,26 +21,26 @@ window.AudioManager = {
     const saved = localStorage.getItem("sound-enabled");
     this.enabled = saved !== null ? saved === "true" : true;
 
-    // 🎵 Música ambiente
+    // Música ambiente
     this.music = new Audio("assets/sounds/music/jigglypuffs.mp3");
     this.music.loop = true;
     this.music.volume = 0.07;
 
     if (!this.enabled) this.music.volume = 0;
 
-    // 🔊 Efectos de sonido
+    // Efectos de sonido
     this.sounds = {
 
-      // 👣 Pasos (sonido único)
+      // Pasos (sonido único)
       step: new Audio(
         "assets/sounds/steps/footstep-1-83098.mp3"
       ),
 
-      // 🪟 UI
+      // UI
       openUI: new Audio("assets/sounds/ui/open.mp3"),
       closeUI: new Audio("assets/sounds/ui/close.mp3"),
 
-      // 🧱 Objetos
+      // Objetos
       keyboard: new Audio(
         "assets/sounds/objects/keyboard-typing-2-292589.mp3"
       ),
