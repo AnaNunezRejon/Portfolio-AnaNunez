@@ -1,48 +1,93 @@
 /* ===============================
-   CONTROLES TÁCTILES (MÓVIL)
+   CONTROLES TÁCTILES – MÓVIL
    =============================== */
 
 #mobile-controls {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 2000;
-  display: none;
+  z-index: 3000;
 }
 
-/* SOLO EN MÓVIL */
+/* Solo móvil */
 @media (max-width: 900px) {
   #mobile-controls {
     display: block;
   }
 }
 
+/* ---------- BOTONES ---------- */
+
 #mobile-controls button {
   pointer-events: all;
   width: 56px;
   height: 56px;
   font-family: "Press Start 2P", monospace;
-  font-size: 16px;
-  background: rgba(0,0,0,0.6);
+  font-size: 18px;
+  background: rgba(0, 0, 0, 0.55);
   color: #7dd3ff;
   border: 3px solid #f4b6ff;
   box-shadow: 3px 3px 0 #000;
+  border-radius: 0;
+  user-select: none;
 }
+
+/* ---------- DPAD ---------- */
 
 .dpad {
   position: absolute;
-  bottom: 30px;
+  bottom: 100px;        /* ⬅ subimos para no pisar instrucciones */
   left: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
 }
 
 .dpad .middle {
   display: flex;
-  gap: 8px;
-  margin-top: 8px;
+  gap: 6px;
 }
+
+/* ---------- ACCIONES ---------- */
 
 .actions {
   position: absolute;
-  bottom: 40px;
-  right: 30px;
+  bottom: 120px;        /* ⬅ simétrico al dpad */
+  right: 24px;
+}
+
+.actions button {
+  width: 64px;
+  height: 64px;
+  font-size: 20px;
+}
+
+/* ---------- HORIZONTAL (landscape) ---------- */
+@media (orientation: landscape) {
+  .dpad {
+    bottom: 40px;
+    left: 20px;
+  }
+
+  .actions {
+    bottom: 40px;
+    right: 30px;
+  }
+}
+
+/* ===============================
+   CONTROLES TÁCTILES – VISIBILIDAD
+   =============================== */
+
+/* Por defecto: OCULTOS */
+#mobile-controls {
+  display: none;
+}
+
+/* Mostrar SOLO en dispositivos táctiles / móviles */
+@media (max-width: 900px), (pointer: coarse) {
+  #mobile-controls {
+    display: block;
+  }
 }

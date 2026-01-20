@@ -509,6 +509,16 @@ body::before {
     }
 }
 
+/* ===============================
+   OCULTAR INSTRUCCIONES EN MÓVIL
+   =============================== */
+
+@media (max-width: 900px) {
+  .instructions {
+    display: none !important;
+  }
+}
+
 @media (max-height: 800px) {
   #game {
     transform: translate(-50%, -50%); 
