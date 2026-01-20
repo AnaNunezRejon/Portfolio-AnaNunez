@@ -423,11 +423,8 @@ function gameLoop() {
   drawInteractHint();
 
 // ESTRELLA INTERACTIVA
-interactStar.update();
-
-if (nearbyObject) {
-  interactStar.draw(ctx, nearbyObject, scale, offsetX, offsetY);
-}
+  interactStar.update();
+  interactStar.draw(ctx, scale, offsetX, offsetY);
 
 
   requestAnimationFrame(gameLoop);

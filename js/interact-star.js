@@ -1,5 +1,5 @@
 // ===============================
-// INTERACT STAR (UI INDICATOR)
+// INTERACT STAR (HUD INDICATOR)
 // ===============================
 
 const interactStar = {
@@ -16,25 +16,29 @@ const interactStar = {
     this.time += 0.05;
   },
 
-  // Dibujo sobre objeto interactuable
-  draw(ctx, object, scale, offsetX, offsetY) {
-    if (!object || !this.image.complete) return;
+  // Dibujo fijo en HUD (esquina)
+  draw(ctx, scale, offsetX, offsetY) {
+    if (!this.image.complete) return;
 
-    // Posición base sobre el objeto
-    const baseX = object.x + object.width / 2;
-    const baseY = object.y - 22 - (object.height * 0.3);
+    // ⭐ EFECTO RESPIRAR / BRILLAR
+    const pulse = 1 + Math.sin(this.time) * 0.15;
+    const alpha = 0.7 + Math.sin(this.time) * 0.3;
 
-    // ⭐ EFECTO RESPIRAR (crece y encoge)
-    const pulse = 1 + Math.sin(this.time) * 0.15; // tamaño
-    const alpha = 0.7 + Math.sin(this.time) * 0.3; // brillo
+    const baseSize = 16;
+    const size = baseSize * pulse;
 
-    const size = 16 * pulse;
+    // 📍 Posición HUD: esquina superior derecha del juego
+    const margin = 10;
 
-    // Posición escalada
     const x =
-      offsetX + (baseX - size / 2) * scale;
+      offsetX +
+      (GAME_WIDTH * scale) -
+      (size * scale) -
+      margin;
+
     const y =
-      offsetY + (baseY - size / 2) * scale;
+      offsetY +
+      margin;
 
     ctx.save();
     ctx.imageSmoothingEnabled = false;
