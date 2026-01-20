@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>🎮 Portfolio RPG - Ana Núñez Rejón</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- Fondo negro para pantalla completa -->
+<div class="screen-border"></div>
+
+<!-- Efecto CRT -->
+<div class="crt-effect"></div>
+
+<!-- Modal de bienvenida -->
+<div id="welcomeModal" class="welcome-modal">
+  <div class="welcome-content">
+    <h1> BIENVENID@ A MI UNIVERSO </h1>
+    
+    <p>
+      Gracias por tu interés.<br>
+      Este es mi portfolio interactivo,<br>
+      explóralo como si fuera un juego.
+    </p>
+    
+    <p style="color: var(--pixel-accent); font-size: 12px;">
+      Diseñadora Gráfica + Desarrolladora<br>
+    </p>
+    
+    <button class="start-btn" onclick="startGame()">
+      Adelante, puedes pasar
+    </button>
+    
+    <p style="margin-top: 30px; font-size: 10px; opacity: 0.7;">
+      (Presiona F para pantalla completa en cualquier momento)
+    </p>
+  </div>
+</div>
+
+<!-- Indicador de pantalla completa -->
+<div id="fullscreenIndicator" class="fullscreen-indicator">
+  🖥️ PANTALLA COMPLETA [F]
+</div>
+<div id="soundToggle" class="sound-toggle">
+  🔊 SONIDO
+</div>
+
+<!-- Instrucciones CORREGIDAS -->
+<div class="instructions" style="display: none;">
+  <span>WASD/Flechas = Mover</span>
+  <span class="separator">•</span>
+  <span>E = Interactuar</span>
+  <span class="separator">•</span>
+  <span>F = Pantalla completa</span>
+  <span class="separator">•</span>
+  <span>ESC = Salir</span>
+</div>
+
+<!-- Canvas del juego -->
+<canvas id="game"></canvas>
+
+<!-- Overlay para contenido -->
+<div id="overlay" class="overlay hidden">
+  <div class="overlay-content">
+    <button id="closeOverlay">✕</button>
+    <div id="overlayBody"></div>
+  </div>
+</div>
+
+<!-- Visor de imágenes -->
+<div id="imageViewer" class="image-viewer hidden">
+  <button class="close-image">✕</button>
+  <img id="imageViewerImg" src="" alt="Preview" />
+</div>
+
+<script src="sonidos.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
