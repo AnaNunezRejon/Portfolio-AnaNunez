@@ -1,0 +1,48 @@
+/* ===============================
+   CONTROLES TÁCTILES (MÓVIL)
+   =============================== */
+
+#mobile-controls {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2000;
+  display: none;
+}
+
+/* SOLO EN MÓVIL */
+@media (max-width: 900px) {
+  #mobile-controls {
+    display: block;
+  }
+}
+
+#mobile-controls button {
+  pointer-events: all;
+  width: 56px;
+  height: 56px;
+  font-family: "Press Start 2P", monospace;
+  font-size: 16px;
+  background: rgba(0,0,0,0.6);
+  color: #7dd3ff;
+  border: 3px solid #f4b6ff;
+  box-shadow: 3px 3px 0 #000;
+}
+
+.dpad {
+  position: absolute;
+  bottom: 30px;
+  left: 20px;
+}
+
+.dpad .middle {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.actions {
+  position: absolute;
+  bottom: 40px;
+  right: 30px;
+}
