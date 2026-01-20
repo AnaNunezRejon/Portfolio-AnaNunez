@@ -477,7 +477,9 @@ window.addEventListener("keydown", (e) => {
 
 // CLIC FUERA
 overlay.addEventListener("click", (e) => {
-  if (e.target === overlay) closeOverlay();
+  if (e.target.id === "overlay") {
+    closeOverlay();
+  }
 });
 
 // ------------------------------------------------------------------------------
