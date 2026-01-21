@@ -10,14 +10,25 @@ let isFullscreen = false;
 let scale = 1;
 let offsetX = 0;
 let offsetY = 0;
+let currentMap = "room"; // ← EMPIEZA EN LA SALA
+let isFirstLoad = true;
 
 // Tamaño REAL de la imagen room.png (640x480)
 const GAME_WIDTH = 640;
 const GAME_HEIGHT = 480;
 
+// VARIABLES DE SPAWN
+
+const ROOM_SPAWN_CENTER = { x: 320, y: 260 };
+const ROOM_SPAWN_DOOR = { x: 320, y: 420 };
+const OUTSIDE_SPAWN_DOOR = { x: 300, y: 260 };
+
 // ---------- ASSETS ----------
 const room = new Image();
 room.src = "assets/room.png";
+
+const exteriorBg = new Image();
+exteriorBg.src = "assets/exterior.jpg";
 
 interactStar.init();
 
@@ -26,8 +37,8 @@ playerSprite.src = "assets/player.png";
 
 // ---------- PLAYER ----------
 const player = {
-  x: 187,  // 280 * (640/960) ≈ 187
-  y: 253,  // 380 * (480/720) ≈ 253
+  x: 320,
+  y: 250,
   width: 32,
   height: 32,
   speed: 2
@@ -233,25 +244,16 @@ window.addEventListener('load', function () {
 fetch("map/room.tmj")
   .then(res => res.json())
   .then(data => {
+    const triggers = data.layers.find(l => l.name === "triggers")?.objects || [];
     collisionObjects = data.layers.find(l => l.name === "collisions")?.objects || [];
     interactables = data.layers.find(l => l.name === "interactables")?.objects || [];
 
-    // Tamaño del TMJ
     const TMJ_WIDTH = data.width * data.tilewidth;
     const TMJ_HEIGHT = data.height * data.tileheight;
 
-    // Usamos el tamaño de la imagen (640x480)
-    MAP_WIDTH = GAME_WIDTH;
-    MAP_HEIGHT = GAME_HEIGHT;
-
-    console.log(`TMJ: ${TMJ_WIDTH}x${TMJ_HEIGHT}, Juego: ${MAP_WIDTH}x${MAP_HEIGHT}`);
-
-    // Si el TMJ no es 640x480, escalamos las colisiones
-    if (TMJ_WIDTH !== MAP_WIDTH || TMJ_HEIGHT !== MAP_HEIGHT) {
-      const scaleX = MAP_WIDTH / TMJ_WIDTH;
-      const scaleY = MAP_HEIGHT / TMJ_HEIGHT;
-
-      console.log(`Escalando colisiones: X=${scaleX.toFixed(2)}, Y=${scaleY.toFixed(2)}`);
+    if (TMJ_WIDTH !== GAME_WIDTH || TMJ_HEIGHT !== GAME_HEIGHT) {
+      const scaleX = GAME_WIDTH / TMJ_WIDTH;
+      const scaleY = GAME_HEIGHT / TMJ_HEIGHT;
 
       collisionObjects = collisionObjects.map(obj => ({
         x: Math.round(obj.x * scaleX),
@@ -271,12 +273,16 @@ fetch("map/room.tmj")
     }
 
     mapLoaded = true;
-    console.log(`Mapa cargado. Colisiones: ${collisionObjects.length}, Interactuables: ${interactables.length}`);
   });
 
 // ---------- COLLISIONS ----------
 function rectsOverlap(ax, ay, aw, ah, bx, by, bw, bh) {
-  return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
+  // Aumenta el rango de detección
+  const margin = 10;
+  return ax < bx + bw + margin &&
+    ax + aw + margin > bx &&
+    ay < by + bh + margin &&
+    ay + ah + margin > by;
 }
 
 function collidesAt(x, y) {
@@ -284,14 +290,25 @@ function collidesAt(x, y) {
     rectsOverlap(x, y, player.width, player.height, o.x, o.y, o.width, o.height)
   );
 }
-
 function getNearbyInteractable() {
-  return interactables.find(o =>
-    rectsOverlap(player.x, player.y, player.width, player.height, o.x, o.y, o.width, o.height)
-  );
+  for (let i = 0; i < interactables.length; i++) {
+    const obj = interactables[i];
+
+    if (
+      rectsOverlap(
+        player.x, player.y, player.width, player.height,
+        obj.x, obj.y, obj.width, obj.height
+      )
+    ) {
+      return obj;
+    }
+  }
+  return null;
 }
 
+
 // ---------- UPDATE ----------
+
 function update() {
   if (!mapLoaded) return;
 
@@ -320,41 +337,26 @@ function update() {
     moving = true;
   }
 
-  // Limitar al tamaño del mapa
-  let nextX = Math.max(0, Math.min(player.x + dx, MAP_WIDTH - player.width));
-  let nextY = Math.max(0, Math.min(player.y + dy, MAP_HEIGHT - player.height));
+  const nextX = Math.max(0, Math.min(player.x + dx, MAP_WIDTH - player.width));
+  const nextY = Math.max(0, Math.min(player.y + dy, MAP_HEIGHT - player.height));
 
-  // Verificar colisiones
   if (dx !== 0 && !collidesAt(nextX, player.y)) player.x = nextX;
   if (dy !== 0 && !collidesAt(player.x, nextY)) player.y = nextY;
 
-  // Animación + sonido de pasos
   if (moving) {
-
-    // 🔊 PASOS SOLO SI HAY TECLA PULSADA
-    if (
-      keys["ArrowUp"] || keys["w"] ||
-      keys["ArrowDown"] || keys["s"] ||
-      keys["ArrowLeft"] || keys["a"] ||
-      keys["ArrowRight"] || keys["d"]
-    ) {
-      AudioManager.playStep();
-    }
-
+    AudioManager.playStep();
     frameTimer++;
     if (frameTimer >= frameSpeed) {
       frame = (frame + 1) % framesPerRow;
       frameTimer = 0;
     }
-
   } else {
     frame = 0;
   }
 
-
-  // Verificar objetos interactuables cercanos
   nearbyObject = getNearbyInteractable();
 }
+
 
 // ---------- SONIDO ----------
 
@@ -372,8 +374,12 @@ function drawRoom() {
   ctx.fillStyle = "#000";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Dibujar la sala escalada
-  drawScaled(room, 0, 0, room.width, room.height, 0, 0, GAME_WIDTH, GAME_HEIGHT);
+  // Elegir imagen según mapa actual
+  if (currentMap === "room") {
+    drawScaled(room, 0, 0, room.width, room.height, 0, 0, GAME_WIDTH, GAME_HEIGHT);
+  } else if (currentMap === "outside") {
+    drawScaled(exteriorBg, 0, 0, exteriorBg.width, exteriorBg.height, 0, 0, GAME_WIDTH, GAME_HEIGHT);
+  }
 }
 
 function drawPlayer() {
@@ -400,44 +406,78 @@ function drawPlayer() {
 function drawInteractHint() {
   if (!nearbyObject) return;
 
-  fillRectScaled(
-    nearbyObject.x + nearbyObject.width / 2 - 13,
-    nearbyObject.y - 28,
-    28,
-    28,
-    "#00b3ff"
-  );
-  fillRectScaled(
-    nearbyObject.x + nearbyObject.width / 2 - 12,
-    nearbyObject.y - 26,
-    26,
-    26,
-    "rgb(255, 251, 2)"
-  );
+  const action = nearbyObject.properties?.find(p => p.name === "action")?.value;
 
-  ctx.fillStyle = "#75008a";
+  // Texto según la acción
+  let text = "E";
+  if (action === "exit-outside") text = "Salir fuera (E)";
+  if (action === "enter-room") text = "Entrar (E)";
+
+  const padding = 6;
+  ctx.font = `${Math.max(10, 12 * scale)}px monospace`;
+  const textWidth = ctx.measureText(text).width / scale;
+  const boxWidth = textWidth + padding * 2;
+  const boxHeight = 20;
+
+  const x = nearbyObject.x + nearbyObject.width / 2 - boxWidth / 2;
+  const y = nearbyObject.y - boxHeight - 10;
+
+  // Fondo
+  fillRectScaled(x, y, boxWidth, boxHeight, "rgba(0,0,0,0.7)");
+  // Borde
+  fillRectScaled(x - 1, y - 1, boxWidth + 2, boxHeight + 2, "#ffd500");
+
+  // Texto
+  ctx.fillStyle = "#5e003a";
   ctx.textAlign = "center";
-  fillTextScaled("E", nearbyObject.x + nearbyObject.width / 2, nearbyObject.y - 9, 14);
+  fillTextScaled(
+    text,
+    nearbyObject.x + nearbyObject.width / 2,
+    y + 14,
+    12
+  );
   ctx.textAlign = "left";
 }
 
+
 // ---------- GAME LOOP ----------
+
 function gameLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
   drawRoom();
   update();
   drawInteractHint();
   drawPlayer();
 
-  // ESTRELLAS EN TODOS LOS INTERACTUABLES
-  interactStar.update();
+  //  INTERIOR → estrellas fijas
+  if (currentMap === "room") {
+    interactStar.update();
+    interactStar.drawAll(ctx, scale, offsetX, offsetY);
+  }
 
-  interactStar.update();
-  interactStar.drawAll(ctx, scale, offsetX, offsetY);
+  //  EXTERIOR → solo objetos con sparkle
+  if (currentMap === "outside") {
+    interactStar.update();
 
+    interactables.forEach(obj => {
+      const hasSparkle = obj.properties?.find(p => p.name === "sparkle")?.value;
+      if (hasSparkle) {
+        interactStar.drawAt(
+          ctx,
+          obj.x + obj.width / 2,
+          obj.y - 10,
+          scale,
+          offsetX,
+          offsetY
+        );
+      }
+    });
+  }
 
   requestAnimationFrame(gameLoop);
 }
+
 
 // ---------- START ----------
 room.onload = () => {
@@ -450,6 +490,11 @@ room.onload = () => {
 
   // Iniciar el bucle del juego
   gameLoop();
+};
+
+// AGREGAR ESTO PARA LA IMAGEN EXTERIOR
+exteriorBg.onload = () => {
+  console.log(`Imagen exterior cargada: ${exteriorBg.width}x${exteriorBg.height}`);
 };
 
 // Event listener para redimensionar
@@ -472,14 +517,12 @@ function openOverlay(html) {
 function closeOverlay() {
   overlay.classList.remove("show");
 
-  AudioManager.restoreMusic(); // ✔️ vuelve volumen
+  AudioManager.restoreMusic(); //  vuelve volumen
   setTimeout(() => {
     overlay.classList.add("hidden");
     overlayBody.innerHTML = "";
   }, 300);
 }
-
-
 
 
 // BOTÓN X
@@ -527,6 +570,84 @@ imageViewer.addEventListener("click", e => {
   if (e.target === imageViewer) closeImage();
 });
 
+// ---------- CAMBIAR MAPA ----------
+function changeMap(mapName) {
+  mapLoaded = false;
+
+  const previousMap = currentMap;
+  lastMap = previousMap;
+  currentMap = mapName;
+
+  if (mapName === "outside") {
+    loadMap("map/outside.tmj");
+
+    player.x = OUTSIDE_SPAWN_DOOR.x;
+    player.y = OUTSIDE_SPAWN_DOOR.y;
+  }
+
+  if (mapName === "room") {
+    loadMap("map/room.tmj");
+
+    if (lastMap === null) {
+      player.x = ROOM_SPAWN_CENTER.x;
+      player.y = ROOM_SPAWN_CENTER.y;
+    } else if (lastMap === "outside") {
+      player.x = ROOM_SPAWN_DOOR.x;
+      player.y = ROOM_SPAWN_DOOR.y;
+    }
+  }
+
+  if (collidesAt(player.x, player.y)) {
+    player.y += 30;
+  }
+}
+
+
+
+
+function loadMap(path) {
+  fetch(path)
+    .then(res => res.json())
+    .then(data => {
+
+      // Capas principales
+      collisionObjects = data.layers.find(l => l.name === "collisions")?.objects || [];
+      interactables = data.layers.find(l => l.name === "interactables")?.objects || [];
+
+      // Tamaño real del mapa TMJ
+      const TMJ_WIDTH = data.width * data.tilewidth;
+      const TMJ_HEIGHT = data.height * data.tileheight;
+
+      // Escalado si el TMJ no coincide con el canvas del juego
+      if (TMJ_WIDTH !== GAME_WIDTH || TMJ_HEIGHT !== GAME_HEIGHT) {
+        const scaleX = GAME_WIDTH / TMJ_WIDTH;
+        const scaleY = GAME_HEIGHT / TMJ_HEIGHT;
+
+        collisionObjects = collisionObjects.map(obj => ({
+          x: Math.round(obj.x * scaleX),
+          y: Math.round(obj.y * scaleY),
+          width: Math.round(obj.width * scaleX),
+          height: Math.round(obj.height * scaleY),
+          properties: obj.properties || []
+        }));
+
+        interactables = interactables.map(obj => ({
+          x: Math.round(obj.x * scaleX),
+          y: Math.round(obj.y * scaleY),
+          width: Math.round(obj.width * scaleX),
+          height: Math.round(obj.height * scaleY),
+          properties: obj.properties || []
+        }));
+      }
+
+      mapLoaded = true;
+    })
+    .catch(error => {
+      console.error(` Error cargando mapa: ${path}`, error);
+    });
+}
+
+
 // ===============================
 // HANDLE ACTION 
 // ===============================
@@ -535,12 +656,12 @@ function handleAction(action) {
   switch (action) {
 
     // ===============================
-    // 💻 PROYECTOS (GITHUB)
+    //  PROYECTOS (GITHUB)
     // ===============================
     case "projects-pc":
       AudioManager.play("keyboard");
       openOverlay(`
-        <h2>💻 PROYECTOS</h2>
+        <h2> PROYECTOS</h2>
 
         <div class="grid grid-2">
 
@@ -866,71 +987,114 @@ Busco prácticas donde aportar mi perspectiva creativa y mi capacidad de aprendi
     case "education":
       AudioManager.play("book");
       openOverlay(`
-        <h2> FORMACIÓN</h2>
+    <h2>FORMACIÓN</h2>
 
-        <div class="grid grid-2">
-          <div class="card">
-            <h3>BELLAS ARTES</h3>
-              <p><strong>Facultad de Bellas Artes | Granada</strong></p>
-            <p>Base artística, composición, color y creatividad visual.</p>
-            <div class="tags">
-              <span class="tag">Arte</span>
-              <span class="tag">Diseño</span>
-            </div>
-          </div>
+    <div class="grid grid-2">
 
-          <div class="card">
-            <h3>FP DAM</h3>
-            <p><strong>New Digital Talent | Granada</strong></p>
-            <p>Desarrollo de aplicaciones multiplataforma (Android, Web).</p>
-            <div class="tags">
-              <span class="tag">Programación</span>
-              <span class="tag">Android</span>
-            </div>
-          </div>
-
-          <div class="card">
-            <h3>MÁSTER DAW</h3>
-                        <p><strong>UNIR</strong></p>
-            <p>Desarrollo web full-stack (Frontend + Backend).</p>
-            <div class="tags">
-              <span class="tag">Web</span>
-              <span class="tag">Full-Stack</span>
-            </div>
-          </div>
-
-          <div class="card">
-            <h3>FORMACIÓN CONTINUA</h3>
-            <p>UX/UI, Figma, JavaScript, Android, Pixel Art.</p>
-            <div class="tags">
-              <span class="tag">Autoaprendizaje</span>
-              <span class="tag">Cursos</span>
-            </div>
-          </div>
-
-          <div class="card">
-            <h3>DISEÑO GRÁFICO</h3>
-            <p><strong>Escuela de artes y oficios | Granada</strong></p>
-            <p>Identidad visual, branding y diseño editorial.</p>
-            <div class="tags">
-              <span class="tag">Branding</span>
-              <span class="tag">Editorial</span>
-            </div>
-          </div>
-
-          <div class="card">
-  <h3>Certificado Google UX7UI Design</h3>
-  <p><strong>Coursera | Google</strong></p>
-  <p>Certificación profesional en diseño de experiencia de usuario (UX) e interfaces (UI) por Google.</p>
-  <div class="tags">
-    <span class="tag">Figma</span>
-    <span class="tag">User Testing</span>
-    <span class="tag">Wireframing</span>
-  </div>
-</div>
+      <div class="card">
+        <h3>Licenciatura en Bellas Artes</h3>
+        <p><strong>Universidad de Granada</strong></p>
+        <p>2004 – 2009</p>
+        <p>Formación artística integral: dibujo, pintura, escultura, composición, color y creatividad visual.</p>
+        <div class="tags">
+          <span class="tag">Arte</span>
+          <span class="tag">Diseño</span>
         </div>
-      `);
+      </div>
+
+      <div class="card">
+        <h3>Grado Superior en Diseño Gráfico</h3>
+        <p><strong>Escuela de Arte de Granada</strong></p>
+        <p>2007 – 2009</p>
+        <p>Diseño gráfico, identidad visual, branding y diseño editorial.</p>
+        <div class="tags">
+          <span class="tag">Branding</span>
+          <span class="tag">Editorial</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Máster Oficial en Dibujo: Creación, Producción y Difusión</h3>
+        <p><strong>Facultad de Bellas Artes | Granada</strong></p>
+        <p>2011 – 2012</p>
+        <p>Especialización en procesos creativos, producción artística y difusión cultural.</p>
+        <div class="tags">
+          <span class="tag">Arte</span>
+          <span class="tag">Producción</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Máster en Diseño Web</h3>
+        <p><strong>Estación Diseño | Granada</strong></p>
+        <p>2017 – 2018 · 1500 horas</p>
+        <p>Diseño y desarrollo de sitios web, UX/UI, branding digital y WordPress.</p>
+        <div class="tags">
+          <span class="tag">Diseño Web</span>
+          <span class="tag">UX/UI</span>
+          <span class="tag">WordPress</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Máster Full Stack Developer</h3>
+        <p><strong>UNIR</strong></p>
+        <p>2023 – 2024 · 1500 horas</p>
+        <p>Desarrollo web full stack: frontend, backend, bases de datos y despliegue.</p>
+        <div class="tags">
+          <span class="tag">Web</span>
+          <span class="tag">Full Stack</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Curso Front-End HTML y CSS</h3>
+        <p><strong>UNIR</strong></p>
+        <p>2023 · 125 horas</p>
+        <p>Maquetación web, HTML5, CSS3 y diseño responsive.</p>
+        <div class="tags">
+          <span class="tag">HTML</span>
+          <span class="tag">CSS</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>FP Desarrollo de Aplicaciones Multiplataforma (DAM)</h3>
+        <p><strong>New Digital Talent | Granada</strong></p>
+        <p>2024 – Actualidad</p>
+        <p>Desarrollo de aplicaciones Android y Web, programación y bases de datos.</p>
+        <div class="tags">
+          <span class="tag">Programación</span>
+          <span class="tag">Android</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Certificado Profesional Google UX/UI Design</h3>
+        <p><strong>Coursera · Google</strong></p>
+        <p>Formación profesional en diseño UX/UI</p>
+        <p>Investigación de usuarios, wireframes, prototipos y testing.</p>
+        <div class="tags">
+          <span class="tag">UX/UI</span>
+          <span class="tag">Figma</span>
+          <span class="tag">User Testing</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Formación continua</h3>
+        <p>Actualización constante en diseño y desarrollo.</p>
+        <p>UX/UI, Figma, JavaScript, Android, Pixel Art.</p>
+        <div class="tags">
+          <span class="tag">Autoaprendizaje</span>
+          <span class="tag">Cursos</span>
+        </div>
+      </div>
+
+    </div>
+  `);
       break;
+
 
     // ===============================
     //  HERRAMIENTAS
@@ -1073,6 +1237,14 @@ Busco prácticas donde aportar mi perspectiva creativa y mi capacidad de aprendi
       `);
       break;
 
+    case "exit-outside":
+      changeMap("outside");
+      break;
+
+    case "enter-room":
+      changeMap("room");
+      break;
+
     // ===============================
     // CONTACTO
     // ===============================
@@ -1143,6 +1315,106 @@ Busco prácticas donde aportar mi perspectiva creativa y mi capacidad de aprendi
     </div>
   `);
       break;
+
+    case "mailbox":
+      AudioManager.play("paper");
+      openOverlay(`
+    <h2>CARTA DE PRESENTACIÓN</h2>
+
+    <div class="letter">
+      <p class="letter-text">
+        Hola,<br><br>
+
+        Soy Ana, diseñadora gráfica y desarrolladora en formación.
+        A lo largo de mi trayectoria he trabajado principalmente en el ámbito del diseño,
+        lo que me ha permitido desarrollar una base visual sólida y una forma de trabajar
+        creativa y estructurada.
+        <br><br>
+
+        Actualmente me estoy formando en Desarrollo de Aplicaciones Multiplataforma (DAM),
+        con el objetivo de ampliar mis competencias técnicas y crear proyectos digitales
+        donde diseño y desarrollo convivan de forma coherente.
+        <br><br>
+
+        Este portfolio es una pequeña representación de mi perfil profesional y personal,
+        y de mi manera de entender el trabajo: con calma, curiosidad y ganas de seguir aprendiendo.
+        <br><br>
+
+        Gracias por tu tiempo.
+      </p>
+
+      <p class="letter-sign">
+        — Ana Núñez Rejón
+      </p>
+    </div>
+  `);
+      break;
+
+case "about-me":
+  openOverlay(`
+    <h2> UN DESCANSO</h2>
+
+    <div class="card" style="line-height: 1.7;">
+      <p>
+        A veces es necesario parar un momento y bajar el ritmo.<br><br>
+
+        En mi día a día disfruto de las cosas sencillas: leer sin prisa, el cine,
+        los videojuegos y siempre con buena música de fondo.
+        Espacios que me ayudan a desconectar, pero también a observar y reflexionar.
+        <br><br>
+
+        Me gusta crear, desmontar y entender cómo funcionan las cosas.
+        Desde maquetas hasta electrónica o consolas retro, disfruto del proceso
+        tanto como del resultado.
+        <br><br>
+
+        También valoro mucho el contacto con la naturaleza y viajar,
+        conocer nuevos lugares y culturas, y dejarme inspirar por otras formas
+        de mirar y vivir el mundo.
+      </p>
+    </div>
+
+    <div class="grid grid-3" style="margin-top: 20px;">
+      <img src="assets/img/yo_maker.jpg" onclick="openImage(this.src)" alt="Proceso creativo y técnico">
+      <img src="assets/img/yo_gato.jpg" onclick="openImage(this.src)" alt="Momentos personales">
+      <img src="assets/img/cartel_padul_2025.jpg" onclick="openImage(this.src)" alt="Cartel ganador 2025">
+    </div>
+
+    <p style="font-size: 9px; opacity: 0.7; text-align: center; margin-top: 12px;">
+      Gracias por tomarte un momento para conocerme.
+    </p>
+  `);
+  break;
+
+  case "song":
+  AudioManager.play("paper"); 
+  openOverlay(`
+    <h2>🎵 MI CANCIÓN FAVORITA</h2>
+
+    <div class="card" style="line-height: 1.7; text-align: center;">
+      <p>
+        Hay canciones que acompañan momentos y se quedan contigo.<br><br>
+        Esta es una de ellas.
+      </p>
+
+      <p style="margin-top: 16px;">
+        <strong>Aqueous Transmission</strong><br>
+        Incubus
+      </p>
+
+      <a 
+        href="https://open.spotify.com/intl-es/track/5M67k54BVUDADZPryaqV1y"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="spotify-button"
+      >
+        Escuchar en Spotify
+      </a>
+    </div>
+  `);
+  break;
+
+
   }
 
   // ===============================
@@ -1153,17 +1425,14 @@ Busco prácticas donde aportar mi perspectiva creativa y mi capacidad de aprendi
   window.addEventListener('resize', handleCanvasScaling);
 
   function handleCanvasScaling() {
-    // No necesitamos cambiar nada aquí porque CSS maneja el tamaño
-    // Solo nos aseguramos que el contexto mantenga el anti-aliasing desactivado
+
     ctx.imageSmoothingEnabled = false;
     ctx.mozImageSmoothingEnabled = false;
     ctx.webkitImageSmoothingEnabled = false;
     ctx.msImageSmoothingEnabled = false;
   }
 
-  // Llámala también al inicio
   handleCanvasScaling();
-
 
 }
 
@@ -1173,4 +1442,5 @@ document.addEventListener("visibilitychange", () => {
     AudioManager.music.currentTime = 0;
   }
 });
+
 

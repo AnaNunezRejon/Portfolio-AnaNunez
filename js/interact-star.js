@@ -1,35 +1,20 @@
+// ===============================
+// INTERACT STAR
+// Interior (estrellas fijas)
+// Exterior (estrellas dinámicas por objeto)
+// ===============================
 
-// Posiciones fijas de estrellas (coordenadas del mapa 640x480)
+//  Posiciones fijas SOLO para el interior (room)
 const STAR_POSITIONS = [
-  // Cama / mesita
-  //{ x: 150, y: 90 },
-
-  // Lámpara
-  { x: 215, y: 80 },
-
-  // TV
-  { x: 340, y: 60 },
-
-  // Cocina
-  { x: 460, y: 100 },
-  { x: 520, y: 80 },
-
-  // Nevera
-  { x: 585, y: 95 },
-
-  // Escritorio PC
-  { x: 170, y: 300 },
-
-  // Librería
-  { x: 40, y: 330 },
-
-  // Espejo
-  { x: 520, y: 300 }
+  { x: 215, y: 80 },   // Lámpara
+  { x: 340, y: 60 },   // TV
+  { x: 460, y: 100 },  // Cocina
+  { x: 520, y: 80 },   // Cocina
+  { x: 585, y: 95 },   // Nevera
+  { x: 170, y: 300 },  // Escritorio
+  { x: 40, y: 330 },   // Librería
+  { x: 520, y: 300 }   // Espejo
 ];
-
-// ===============================
-// INTERACT STAR (STATIC OBJECTS)
-// ===============================
 
 const interactStar = {
   image: new Image(),
@@ -43,10 +28,10 @@ const interactStar = {
     this.time += 0.06;
   },
 
+  //  INTERIOR: dibuja todas las estrellas decorativas
   drawAll(ctx, scale, offsetX, offsetY) {
     if (!this.image.complete) return;
 
-    // ⭐ Animación respirar
     const pulse = 1 + Math.sin(this.time) * 0.25;
     const alpha = 0.65 + Math.sin(this.time) * 0.35;
     const baseSize = 16;
@@ -57,17 +42,38 @@ const interactStar = {
     ctx.globalAlpha = alpha;
 
     STAR_POSITIONS.forEach(pos => {
-      const x = offsetX + (pos.x - size / 2) * scale;
-      const y = offsetY + (pos.y - size / 2) * scale;
-
       ctx.drawImage(
         this.image,
-        x,
-        y,
+        offsetX + (pos.x - size / 2) * scale,
+        offsetY + (pos.y - size / 2) * scale,
         size * scale,
         size * scale
       );
     });
+
+    ctx.restore();
+  },
+
+  //  EXTERIOR: dibuja una estrella puntual (buzón, tocón, etc.)
+  drawAt(ctx, x, y, scale, offsetX, offsetY) {
+    if (!this.image.complete) return;
+
+    const pulse = 1 + Math.sin(this.time) * 0.25;
+    const alpha = 0.65 + Math.sin(this.time) * 0.35;
+    const baseSize = 16;
+    const size = baseSize * pulse;
+
+    ctx.save();
+    ctx.imageSmoothingEnabled = false;
+    ctx.globalAlpha = alpha;
+
+    ctx.drawImage(
+      this.image,
+      offsetX + (x - size / 2) * scale,
+      offsetY + (y - size / 2) * scale,
+      size * scale,
+      size * scale
+    );
 
     ctx.restore();
   }
