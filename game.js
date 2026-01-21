@@ -181,25 +181,25 @@ function handleFullscreenChange() {
 // ---------- INICIO DEL JUEGO ----------
 function startGame() {
 
-    AudioManager.init();
-    AudioManager.playMusic();
+  AudioManager.init();
+  AudioManager.playMusic();
 
-    interactStar.init();
+  interactStar.init();
 
 
-    // Ocultar modal
-    document.getElementById('welcomeModal').style.display = 'none';
+  // Ocultar modal
+  document.getElementById('welcomeModal').style.display = 'none';
 
-    // Mostrar instrucciones
-    document.querySelector('.instructions').style.display = 'block';
+  // Mostrar instrucciones
+  document.querySelector('.instructions').style.display = 'block';
 
-    // Configurar canvas
-    setupCanvas();
+  // Configurar canvas
+  setupCanvas();
 
-    // Iniciar en pantalla completa después de un breve delay
-    setTimeout(() => {
-        enterFullscreen();
-    }, 300);
+  // Iniciar en pantalla completa después de un breve delay
+  setTimeout(() => {
+    enterFullscreen();
+  }, 300);
 }
 
 // ---------- INPUT HANDLING ----------
@@ -401,14 +401,21 @@ function drawInteractHint() {
   if (!nearbyObject) return;
 
   fillRectScaled(
+    nearbyObject.x + nearbyObject.width / 2 - 13,
+    nearbyObject.y - 28,
+    28,
+    28,
+    "#00b3ff"
+  );
+  fillRectScaled(
     nearbyObject.x + nearbyObject.width / 2 - 12,
     nearbyObject.y - 26,
-    24,
-    24,
-    "rgba(0,0,0,0.7)"
+    26,
+    26,
+    "rgb(255, 251, 2)"
   );
 
-  ctx.fillStyle = "#fff";
+  ctx.fillStyle = "#75008a";
   ctx.textAlign = "center";
   fillTextScaled("E", nearbyObject.x + nearbyObject.width / 2, nearbyObject.y - 9, 14);
   ctx.textAlign = "left";
@@ -419,15 +426,14 @@ function gameLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawRoom();
   update();
-  drawPlayer();
   drawInteractHint();
+  drawPlayer();
 
-// ESTRELLAS EN TODOS LOS INTERACTUABLES
-interactStar.update();
+  // ESTRELLAS EN TODOS LOS INTERACTUABLES
+  interactStar.update();
 
-interactables.forEach(obj => {
-  interactStar.draw(ctx, obj, scale, offsetX, offsetY);
-});
+  interactStar.update();
+  interactStar.drawAll(ctx, scale, offsetX, offsetY);
 
 
   requestAnimationFrame(gameLoop);
@@ -457,20 +463,20 @@ const closeOverlayBtn = document.getElementById("closeOverlay");
 // ABRIR
 function openOverlay(html) {
   AudioManager.lowerMusic(); // ✔️ solo baja volumen
-    overlayBody.innerHTML = html;
-    overlay.classList.remove("hidden");
-    overlay.classList.add("show");
+  overlayBody.innerHTML = html;
+  overlay.classList.remove("hidden");
+  overlay.classList.add("show");
 }
 
 // CERRAR
 function closeOverlay() {
-    overlay.classList.remove("show");
+  overlay.classList.remove("show");
 
-    AudioManager.restoreMusic(); // ✔️ vuelve volumen
-    setTimeout(() => {
-        overlay.classList.add("hidden");
-        overlayBody.innerHTML = "";
-    }, 300);
+  AudioManager.restoreMusic(); // ✔️ vuelve volumen
+  setTimeout(() => {
+    overlay.classList.add("hidden");
+    overlayBody.innerHTML = "";
+  }, 300);
 }
 
 

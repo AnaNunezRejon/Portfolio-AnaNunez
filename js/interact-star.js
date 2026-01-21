@@ -1,5 +1,34 @@
+
+// Posiciones fijas de estrellas (coordenadas del mapa 640x480)
+const STAR_POSITIONS = [
+  // Cama / mesita
+  //{ x: 150, y: 90 },
+
+  // Lámpara
+  { x: 215, y: 80 },
+
+  // TV
+  { x: 340, y: 60 },
+
+  // Cocina
+  { x: 460, y: 100 },
+  { x: 520, y: 80 },
+
+  // Nevera
+  { x: 585, y: 95 },
+
+  // Escritorio PC
+  { x: 170, y: 300 },
+
+  // Librería
+  { x: 40, y: 330 },
+
+  // Espejo
+  { x: 520, y: 300 }
+];
+
 // ===============================
-// INTERACT STAR (OBJECT INDICATOR)
+// INTERACT STAR (STATIC OBJECTS)
 // ===============================
 
 const interactStar = {
@@ -11,38 +40,34 @@ const interactStar = {
   },
 
   update() {
-    this.time += 0.05;
+    this.time += 0.06;
   },
 
-  draw(ctx, object, scale, offsetX, offsetY) {
-    if (!object || !this.image.complete) return;
+  drawAll(ctx, scale, offsetX, offsetY) {
+    if (!this.image.complete) return;
 
-    // Posición sobre el objeto
-    const baseX = object.x + object.width / 2;
-    const baseY = object.y - 22 - (object.height * 0.3);
-
-    // ⭐ Respirar / brillar
-    const pulse = 1 + Math.sin(this.time) * 0.15;
-    const alpha = 0.7 + Math.sin(this.time) * 0.3;
-
-    const size = 16 * pulse;
-
-    const x =
-      offsetX + (baseX - size / 2) * scale;
-    const y =
-      offsetY + (baseY - size / 2) * scale;
+    // ⭐ Animación respirar
+    const pulse = 1 + Math.sin(this.time) * 0.25;
+    const alpha = 0.65 + Math.sin(this.time) * 0.35;
+    const baseSize = 16;
+    const size = baseSize * pulse;
 
     ctx.save();
     ctx.imageSmoothingEnabled = false;
     ctx.globalAlpha = alpha;
 
-    ctx.drawImage(
-      this.image,
-      x,
-      y,
-      size * scale,
-      size * scale
-    );
+    STAR_POSITIONS.forEach(pos => {
+      const x = offsetX + (pos.x - size / 2) * scale;
+      const y = offsetY + (pos.y - size / 2) * scale;
+
+      ctx.drawImage(
+        this.image,
+        x,
+        y,
+        size * scale,
+        size * scale
+      );
+    });
 
     ctx.restore();
   }

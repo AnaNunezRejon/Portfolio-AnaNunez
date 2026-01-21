@@ -643,3 +643,17 @@ body::before {
 .sound-toggle.off {
     opacity: 0.5;
 }
+
+/* Por defecto: visible (PC) */
+.pc-only-hint {
+  margin-top: 30px;
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+/* En móvil: ocultar */
+@media (max-width: 768px) {
+  .pc-only-hint {
+    display: none;
+  }
+}
