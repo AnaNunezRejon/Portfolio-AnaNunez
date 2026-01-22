@@ -194,7 +194,12 @@
                          "name":"action",
                          "type":"string",
                          "value":"mailbox"
-                        }],
+                        },
+                         {
+      "name": "sparkle",
+      "type": "bool",
+      "value": true
+    }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -211,7 +216,12 @@
                          "name":"action",
                          "type":"string",
                          "value":"enter-room"
-                        }],
+                        },
+                         {
+      "name": "sparkle",
+      "type": "bool",
+      "value": true
+    }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -228,7 +238,12 @@
                          "name":"action",
                          "type":"string",
                          "value":"about-me"
-                        }],
+                        },
+                         {
+      "name": "sparkle",
+      "type": "bool",
+      "value": true
+    }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -245,7 +260,12 @@
                          "name":"action",
                          "type":"string",
                          "value":"song"
-                        }],
+                        },
+                         {
+      "name": "sparkle",
+      "type": "bool",
+      "value": true
+    }],
                  "rotation":0,
                  "type":"",
                  "visible":true,

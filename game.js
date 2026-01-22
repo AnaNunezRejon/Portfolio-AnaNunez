@@ -450,33 +450,33 @@ function gameLoop() {
   drawInteractHint();
   drawPlayer();
 
-  //  INTERIOR → estrellas fijas
+  // ⭐ actualizar animación SIEMPRE
+  interactStar.update();
+
+  // ⭐ estrellas fijas SOLO en room
   if (currentMap === "room") {
-    interactStar.update();
     interactStar.drawAll(ctx, scale, offsetX, offsetY);
   }
 
-  //  EXTERIOR → solo objetos con sparkle
-  if (currentMap === "outside") {
-    interactStar.update();
+  // ⭐ estrellas dinámicas en CUALQUIER mapa
+  interactables.forEach(obj => {
+    const hasSparkle = obj.properties?.find(p => p.name === "sparkle")?.value;
 
-    interactables.forEach(obj => {
-      const hasSparkle = obj.properties?.find(p => p.name === "sparkle")?.value;
-      if (hasSparkle) {
-        interactStar.drawAt(
-          ctx,
-          obj.x + obj.width / 2,
-          obj.y - 10,
-          scale,
-          offsetX,
-          offsetY
-        );
-      }
-    });
-  }
+    if (hasSparkle) {
+      interactStar.drawAt(
+        ctx,
+        obj.x + obj.width / 2,
+        obj.y - 10,
+        scale,
+        offsetX,
+        offsetY
+      );
+    }
+  });
 
   requestAnimationFrame(gameLoop);
 }
+
 
 
 // ---------- START ----------
@@ -676,7 +676,7 @@ function handleAction(action) {
               <span class="tag">UX</span>
               <span class="tag">UI</span>
             </div>
-            <a href="https://github.com/AnaNunezRejon" target="_blank">
+            <a href="https://github.com/AnaNunezRejon/AnaNunezRejon" target="_blank">
               Ver en GitHub →
             </a>
           </div>
@@ -706,7 +706,7 @@ function handleAction(action) {
               <span class="tag">MVVM</span>
               <span class="tag">Java</span>
             </div>
-            <a href="https://github.com/AnaNunezRejon" target="_blank">
+            <a href="https://github.com/AnaNunezRejon/AnaNunezRejon" target="_blank">
               Ver en GitHub →
             </a>
           </div>
@@ -721,7 +721,7 @@ function handleAction(action) {
               <span class="tag">Diseño</span>
               <span class="tag">Java</span>
             </div>
-            <a href="https://github.com/AnaNunezRejon" target="_blank">
+            <a href="https://github.com/AnaNunezRejon/AnaNunezRejon" target="_blank">
               Ver en GitHub →
             </a>
           </div>
@@ -751,7 +751,7 @@ function handleAction(action) {
               <span class="tag">JS</span>
               <span class="tag">Pixel Art</span>
             </div>
-            <a href="https://github.com/AnaNunezRejon" target="_blank">
+            <a href="https://github.com/AnaNunezRejon/AnaNunezRejon" target="_blank">
               Ver en GitHub →
             </a>
           </div>
@@ -1143,7 +1143,7 @@ Busco prácticas donde aportar mi perspectiva creativa y mi capacidad de aprendi
     </div>
     
     <div style="margin-top: 30px; text-align: center;">
-      <a href="https://github.com/tu-usuario" target="_blank" class="pixel-btn" style="font-size: 11px; padding: 12px 24px;">VER GITHUB</a>
+      <a href="https://github.com/AnaNunezRejon/AnaNunezRejon" target="_blank" class="pixel-btn" style="font-size: 11px; padding: 12px 24px;">VER GITHUB</a>
     </div>
   `);
       break;
@@ -1272,7 +1272,7 @@ Busco prácticas donde aportar mi perspectiva creativa y mi capacidad de aprendi
 
       <div class="grid grid-2">
         <div class="card">
-          <a href="https://github.com/AnaNunezRejon" target="_blank" 
+          <a href="https://github.com/AnaNunezRejon/AnaNunezRejon" target="_blank" 
              style="text-decoration: none; display: block;">
             <h3 style="color: #ffe3ff;"> GITHUB</h3>
             <p style="color: #3d0a6fff;">Ver proyectos de código</p>
