@@ -679,6 +679,9 @@ function handleAction(action) {
             <a href="https://github.com/AnaNunezRejon/AnaNunezRejon" target="_blank">
               Ver en GitHub →
             </a>
+                        <a href="https://www.figma.com/design/VMs5Tabczv0oBFbj2fT9nA/Untitled--Copy-?node-id=0-1&t=wPErBrMNTdtvC164-1" target="_blank">
+              Ver en Figma →
+            </a>
           </div>
 
           <!-- No Lo Tiro -->
@@ -691,7 +694,7 @@ function handleAction(action) {
               <span class="tag">Kotlin</span>
               <span class="tag">UI</span>
             </div>
-            <a href="https://www.figma.com/" target="_blank">
+            <a href="https://www.figma.com/design/irytnXzr7lZYeKSxTe0yh9/AppGratis?t=wPErBrMNTdtvC164-1" target="_blank">
               Ver en Figma →
             </a>
           </div>
@@ -736,7 +739,7 @@ function handleAction(action) {
               <span class="tag">Diseño</span>
               <span class="tag">Web</span>
             </div>
-            <a href="https://www.figma.com/" target="_blank">
+            <a href="https://www.figma.com/design/feJla3jKWhU6yuq7w6cO3V/Untitled--Copy-?t=wPErBrMNTdtvC164-1" target="_blank">
               Ver en Figma →
             </a>
           </div>
