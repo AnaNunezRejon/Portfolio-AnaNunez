@@ -1,3 +1,6 @@
+<img width="1633" height="448" alt="image" src="https://github.com/user-attachments/assets/2232b583-9cb7-4c47-8ad9-da7c597fe610" />
+
+
 #  Portfolio & Curriculum Online
 
 Este proyecto es un **portfolio web interactivo** diseñado para presentar mi perfil profesional de forma visual, clara y creativa. Funciona como **currículum online**, combinando diseño UI/UX, desarrollo web y una experiencia inspirada en el concepto de *universo personal*.
